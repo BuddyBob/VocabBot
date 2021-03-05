@@ -1,3 +1,5 @@
+# Vocabulary.com bot
+
 This is a bot which can finish your vocabulary.com homework for you!
 
 ## Prerequisets
