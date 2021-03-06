@@ -58,7 +58,7 @@ This is a bot which can finish your vocabulary.com homework for you!
 ```
 
 ## DISCLAMER
-You wont learn anything from this - **besides codee**
+You wont learn anything from this - **besides code**
 
 Many answers will be answered wrong - **but in one hour you can acheive around 50k points**
 
