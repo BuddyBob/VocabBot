@@ -31,7 +31,7 @@ This is a bot which can finish your vocabulary.com homework for you!
   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Select the picture
   
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Spell it
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Spell it is fill in the blank
 
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Reasons chrome browswer might quit**
   
@@ -57,6 +57,12 @@ This is a bot which can finish your vocabulary.com homework for you!
     url = "https://www.vocabulary.com/lists/194479/practice"
 ```
 
+## DISCLAMER
+You wont learn anything from this - **besides codee**
+
+Many answers will be answered wrong - **but in one hour you can acheive around 50k points**
+
+I am not responsible if you get banned - **though this is highly improbable**
   
   
   
