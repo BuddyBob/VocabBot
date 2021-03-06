@@ -2,6 +2,8 @@ import os
 import time
 import random
 import config
+import traceback
+import sys
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from unidecode import unidecode
@@ -57,23 +59,38 @@ def assignment():
     driver.get(url)
     option_high_score = scrapper()
     click_op(option_high_score)
-    print("[+] STARTING VOCABULARY BOT")
-    print("\a\a\a\a\a\a\a")
 
 
 
 #check for correct answer
 def scrapper():
-    time.sleep(3)
     #get code for page
+    time.sleep(1.5)
     source = unidecode(driver.page_source)
     soup = BeautifulSoup(source, "html.parser")
     length_check = len(
         soup.findAll('div', attrs={'class': 'questionContent'})[0].text.split(" "))
-    if(length_check == 1):
+    try:
         word = soup.findAll('strong')[-1].text
-        print('word:',word)
+        print(word)
+        try:
+            levelPoss1 = ['//*[@id="challenge"]/div/div[1]/div/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[2]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[3]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[4]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[5]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[6]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[7]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[8]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[8]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[9]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[10]/div/div/section[1]/div[1]/div[2]/div[2]/input']
 
+            for i in range(11):
+                try:
+                    x = levelPoss1[i]
+                    if len(word.split())>0:
+                        word = word.split()[0]
+                    driver.find_element_by_xpath(x).send_keys(str(word),Keys.ENTER)
+                    click_op()
+                except Exception as e:
+                    pass
+
+            
+        except Exception :
+            print(traceback.format_exc())
+
+            print('Multy')
         dic_exceptions = ['up', 'as', 'if', 'the', 'who', 'has', 'a', 'an', 'to', 'for', 'from', 'is', 'where', 'when', 'why',
                             'how', 'which', 'of', 'one', "one's", 'or', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
 
@@ -90,13 +107,12 @@ def scrapper():
         final = []
         options = [op1, op2, op3, op4]
                         #================================  Take out unessasary letters from Options ==========================#
-        for option in options:
-            for item in option:
-                for x in dic_exceptions:
-                    if x == item:
-                        p = option.index(x)
-                        option.pop(p)
-        print('answers:',options)
+        # for option in options:
+        #     for item in option:
+        #         for x in dic_exceptions:
+        #             if x == item:
+        #                 p = option.index(x)
+        #                 option.pop(p)
                 #================================  Rate options based on how many words in answer match words in dict ==========================#
         s_link = "https://www.vocabulary.com/dictionary/"
         link = s_link + word
@@ -114,13 +130,14 @@ def scrapper():
 
             rate_arr.append(a)
             a = 0
+        print(rate_arr)
                 #================================  Option Rating ==========================#
-        print(f'Occurances in dic: {rate_arr}') 
         _1OpGuess = rate_arr[0]
         _2OpGuess = rate_arr[1]
         _3OpGuess = rate_arr[2]
         _4OpGuess = rate_arr[3]
         #Return which answer to click. If there are no words that matched in the dict it will by default return 2
+
         if _1OpGuess > _2OpGuess and _1OpGuess >_3OpGuess and _1OpGuess >_4OpGuess: return 1
         elif _2OpGuess > _1OpGuess and _2OpGuess > _3OpGuess and _2OpGuess > _4OpGuess: return 2
         elif _3OpGuess > _1OpGuess and _3OpGuess > _2OpGuess and _3OpGuess > _4OpGuess: return 3
@@ -129,7 +146,8 @@ def scrapper():
 
             
 
-    else:
+    
+    except:
         driver.quit()
         exit()
 
@@ -138,14 +156,17 @@ def scrapper():
     #     driver.quit()
     #     main()
 
-
+ 
 def click_op(i):
     #click the answer
-    choice = []
-    choice.append(i)
-    op = i
-    high = str(op)
-    time.sleep(.5)
+    try:
+        choice = []
+        choice.append(i)
+        op = i
+        high = str(op)
+        time.sleep(.5)
+    except:
+        pass
     #scan current question level
     try:
         element = driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
@@ -178,22 +199,34 @@ def click_op(i):
                                             element =driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[10]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
                                         except:
                                             try:
-                                                txt = driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div/div/div/section[1]/div[1]/div[1]/div[2]/strong[1]').txt
+                                                element =driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[11]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
                                             except:
                                                 try:
-                                                    for i in range(1,10):
-                                                        txt = driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div['+str(i)+']/div/div/section[1]/div[1]/div[1]/div[2]/strong[1]').txt
+                                                    element =driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[12]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
                                                 except:
-                                                    driver.quit()
-                                                    exit()
-
+                                                    try:
+                                                        element =driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[13]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
+                                                    except:
+                                                        try:
+                                                            element =driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[14]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
+                                                        except:
+                                                            try:
+                                                                element =driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[15]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
+                                                            except:
+                                                                try:
+                                                                    element =driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[16]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
+                                                                except:
+                                                                    try:
+                                                                        element =driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[17]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
+                                                                    except:
+                                                                        print('Out')
                                             
-
 
     try:  
         nextQ = driver.find_element_by_xpath('//*[@id="challenge"]/div/div[2]/button').click()
-    except:
+        
         #if the previous answer was wrong choose random one
+    except:
         while True:
             num = random.randint(1,4)
             if num not in choice:
