@@ -1,8 +1,8 @@
-EMAIL = "email"
-PASSWORD = "pwd"
+EMAIL = "22tantonio@saintphilipschool.org"
+PASSWORD = "Coollunch59"
 #On mac it would look something like this - '/Users/Myname/Downloads/chromedriver'
 #On windows it would look something like this - 'C:\Users\Myname\Downloads\chromedriver'
-path_to_chromedriver = 'path'
+path_to_chromedriver = '/Users/Aspera/Desktop/chromedriver'
 #Note - keep quotes 'path'
 
 #set this to a highnumber such as 100.

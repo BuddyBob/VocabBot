@@ -1,13 +1,15 @@
 import os
+import sys
 import time
 import random
 import config
 import traceback
-import sys
+import synonyms
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from unidecode import unidecode
 from urllib.request import urlopen
+from PyDictionary import PyDictionary
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,13 +21,14 @@ from selenium.webdriver.support import expected_conditions as EC
 #url = "https://www.vocabulary.com/lists/23380/practice"
 # url = "https://www.vocabulary.com/lists/7701690/practice"
 url = "https://www.vocabulary.com/lists/194479/practice"
+# url = "https://www.vocabulary.com/lists/7713458/practice"
 #url = "https://www.vocabulary.com/lists/52473/practice"
 
 #variables
 global t
 t = 0
 choice = []
-count = 0
+dictionary = PyDictionary()
 #On mac it would look something like this - /Users/Myname/Downloads/chromedriver
 #On windows it would look something like this - C:\Users\Myname\Downloads\chromedriver
 driver = webdriver.Chrome(executable_path=config.path_to_chromedriver)
@@ -72,14 +75,14 @@ def scrapper():
         soup.findAll('div', attrs={'class': 'questionContent'})[0].text.split(" "))
     try:
         word = soup.findAll('strong')[-1].text
-        print(word)
+        print('-----------')
+        print("Word:",word)
         try:
             levelPoss1 = ['//*[@id="challenge"]/div/div[1]/div/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[2]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[3]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[4]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[5]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[6]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[7]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[8]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[8]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[9]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[10]/div/div/section[1]/div[1]/div[2]/div[2]/input']
-
             for i in range(11):
                 try:
                     x = levelPoss1[i]
-                    if len(word.split())>0:
+                    if len(word.split(word))>0:
                         word = word.split()[0]
                     driver.find_element_by_xpath(x).send_keys(str(word),Keys.ENTER)
                     click_op()
@@ -90,9 +93,7 @@ def scrapper():
         except Exception :
             print(traceback.format_exc())
 
-            print('Multy')
-        dic_exceptions = ['up', 'as', 'if', 'the', 'who', 'has', 'a', 'an', 'to', 'for', 'from', 'is', 'where', 'when', 'why',
-                            'how', 'which', 'of', 'one', "one's", 'or', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
+        dic_exceptions = ['a','and','as']
 
                         #================================  get possible answers ==========================#
         op1 = (soup.findAll('a', attrs={'accesskey': '1A'})[
@@ -106,6 +107,7 @@ def scrapper():
                 -1].text + "\n").rstrip('\n').split(" ")
         final = []
         options = [op1, op2, op3, op4]
+        print('Answers: '+str(options))
                         #================================  Take out unessasary letters from Options ==========================#
         # for option in options:
         #     for item in option:
@@ -118,19 +120,44 @@ def scrapper():
         link = s_link + word
         html = urlopen(link)
         soup = BeautifulSoup(html, "html.parser")
+        findDef = (soup.findAll('div', attrs={'class': 'definition'}))
         a = 0
         source_dic = unidecode(soup.prettify())
-        
+        newDef = []
+        for ops in findDef:
+            newDef.append(str(ops.get_text()))
+        newDef = [" ".join(string.split()) for string in newDef]
+        findDef = []
+        for x in newDef:
+            x = x.replace('(','')
+            x = x.replace(')','')
+            x= x.split(' ')
+            for y in x:
+                findDef.append(y)
+        syns = dictionary.synonym(word)
+        try:
+            for syn in syns:
+                newDef.append(syn)
+        except:
+            pass
+        try:
+            syns = synonyms.getSyns(word)
+            for syn in syns:
+                newDef.append(syn)
+        except Exception:
+            print(traceback.format_exc())
+
+
+
+        print('dict: '+str(findDef))
         rate_arr = []
         for option in options:
             for item in option:
-                if item in source_dic:
-                    soup.findAll(item)
+                if item in source_dic+str(newDef) or item in newDef:
                     a += 1
-
             rate_arr.append(a)
             a = 0
-        print(rate_arr)
+        print('rating: '+str(rate_arr))
                 #================================  Option Rating ==========================#
         _1OpGuess = rate_arr[0]
         _2OpGuess = rate_arr[1]
@@ -147,7 +174,8 @@ def scrapper():
             
 
     
-    except:
+    except Exception:
+        print(traceback.format_exc())
         driver.quit()
         exit()
 
@@ -219,7 +247,7 @@ def click_op(i):
                                                                     try:
                                                                         element =driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[17]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
                                                                     except:
-                                                                        print('Out')
+                                                                        pass
                                             
 
     try:  
