@@ -4,7 +4,7 @@ import time
 import random
 import config
 import traceback
-import synonyms
+import words
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from unidecode import unidecode
@@ -77,22 +77,26 @@ def scrapper():
         word = soup.findAll('strong')[-1].text
         print('-----------')
         print("Word:",word)
+
+
         try:
             levelPoss1 = ['//*[@id="challenge"]/div/div[1]/div/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[2]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[3]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[4]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[5]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[6]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[7]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[8]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[8]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[9]/div/div/section[1]/div[1]/div[2]/div[2]/input','//*[@id="challenge"]/div/div[1]/div[10]/div/div/section[1]/div[1]/div[2]/div[2]/input']
             for i in range(11):
                 try:
                     x = levelPoss1[i]
-                    if len(word.split(word))>0:
-                        word = word.split()[0]
-                    driver.find_element_by_xpath(x).send_keys(str(word),Keys.ENTER)
-                    click_op()
+                    if word[:int(len(word)/2)] == word:word = word[:int(len(word)/1.5)]
+
+                    x = driver.find_element_by_xpath(x).send_keys(str(word),Keys.ENTER)
+                    try:
+                        nextQ = driver.find_element_by_xpath('//*[@id="challenge"]/div/div[2]/button').click()
+                    except Exception:
+                        pass
                 except Exception as e:
                     pass
 
             
         except Exception :
-            print(traceback.format_exc())
-
+            pass
         dic_exceptions = ['a','and','as']
 
                         #================================  get possible answers ==========================#
@@ -109,12 +113,12 @@ def scrapper():
         options = [op1, op2, op3, op4]
         print('Answers: '+str(options))
                         #================================  Take out unessasary letters from Options ==========================#
-        # for option in options:
-        #     for item in option:
-        #         for x in dic_exceptions:
-        #             if x == item:
-        #                 p = option.index(x)
-        #                 option.pop(p)
+        for option in options:
+            for item in option:
+                for x in dic_exceptions:
+                    if x == item:
+                        p = option.index(x)
+                        option.pop(p)
                 #================================  Rate options based on how many words in answer match words in dict ==========================#
         s_link = "https://www.vocabulary.com/dictionary/"
         link = s_link + word
@@ -138,18 +142,31 @@ def scrapper():
         try:
             for syn in syns:
                 newDef.append(syn)
-        except:
+        except Exception:
             pass
         try:
-            syns = synonyms.getSyns(word)
+            syns = words.getSyns(word)
             for syn in syns:
                 newDef.append(syn)
         except Exception:
-            print(traceback.format_exc())
+            pass
+        try:
+            extraDefs = words.getDef(word)
+            for defX in extraDefs:
+                newDef.append(defX)
+        except Exception:
+            pass
 
 
 
-        print('dict: '+str(findDef))
+
+
+
+
+
+
+
+        print('dict: '+str(newDef))
         rate_arr = []
         for option in options:
             for item in option:
@@ -255,9 +272,14 @@ def click_op(i):
         
         #if the previous answer was wrong choose random one
     except:
+        count = 0
         while True:
+            count += 1
+            if count >= 50:
+                exit()
             num = random.randint(1,4)
             if num not in choice:
+                choice = []
                 break
         click_op(num)
     
@@ -268,4 +290,7 @@ def click_op(i):
 
 
 #====================================================================================================================================================#
-main()
+try:
+    main()
+except Exception:
+    print(traceback.format_exc())
