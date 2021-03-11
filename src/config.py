@@ -1,8 +1,8 @@
-EMAIL = "22tantonio@saintphilipschool.org"
-PASSWORD = "Coollunch59"
+EMAIL = "email"
+PASSWORD = "pwd"
 #On mac it would look something like this - '/Users/Myname/Downloads/chromedriver'
 #On windows it would look something like this - 'C:\Users\Myname\Downloads\chromedriver'
-path_to_chromedriver = '/Users/Aspera/Desktop/chromedriver'
+path_to_chromedriver = 'path'
 #Note - keep quotes 'path'
 
 #set this to a highnumber such as 100.
@@ -10,4 +10,4 @@ path_to_chromedriver = '/Users/Aspera/Desktop/chromedriver'
 #   this will reset the program and start over. 
 #       Setting it to 100 means if and error occurs it will start over. This process will happen 100 times. If this limit is exceeded
 #           the program will quit
-TRIES = 2
+TRIES = 10
