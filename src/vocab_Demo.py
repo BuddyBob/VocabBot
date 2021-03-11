@@ -75,8 +75,6 @@ def scrapper():
         soup.findAll('div', attrs={'class': 'questionContent'})[0].text.split(" "))
     try:
         word = soup.findAll('strong')[-1].text
-        print('-----------')
-        print("Word:",word)
 
 
         try:
@@ -84,7 +82,7 @@ def scrapper():
             for i in range(11):
                 try:
                     x = levelPoss1[i]
-                    if word[:int(len(word)/2)] == word:word = word[:int(len(word)/1.5)]
+                    if word[:int(len(word)/2)] == word:word = word[:int(len(word)/2)]
 
                     x = driver.find_element_by_xpath(x).send_keys(str(word),Keys.ENTER)
                     try:
@@ -111,7 +109,6 @@ def scrapper():
                 -1].text + "\n").rstrip('\n').split(" ")
         final = []
         options = [op1, op2, op3, op4]
-        print('Answers: '+str(options))
                         #================================  Take out unessasary letters from Options ==========================#
         for option in options:
             for item in option:
@@ -166,16 +163,13 @@ def scrapper():
 
 
 
-        print('dict: '+str(newDef))
         rate_arr = []
         for option in options:
             for item in option:
                 if item in source_dic+str(newDef) or item in newDef:
                     a += 1
             rate_arr.append(a)
-            a = 0
-        print('rating: '+str(rate_arr))
-                #================================  Option Rating ==========================#
+            a = 0                #================================  Option Rating ==========================#
         _1OpGuess = rate_arr[0]
         _2OpGuess = rate_arr[1]
         _3OpGuess = rate_arr[2]
@@ -192,7 +186,6 @@ def scrapper():
 
     
     except Exception:
-        print(traceback.format_exc())
         driver.quit()
         exit()
 
@@ -212,14 +205,14 @@ def click_op(i):
         time.sleep(.5)
     except:
         pass
-    #scan current question level
+        #hello there man you suck hahahah
     try:
         element = driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
     except:
         try:
             element = driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[2]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
         except:
-            try:
+            try: 
                 element = driver.find_element_by_xpath('//*[@id="challenge"]/div/div[1]/div[3]/div/div/section[1]/div[1]/div[4]/a['+high+']').click()
             except:
                 try:
@@ -293,4 +286,4 @@ def click_op(i):
 try:
     main()
 except Exception:
-    print(traceback.format_exc())
+    pass

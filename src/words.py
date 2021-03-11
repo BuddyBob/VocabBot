@@ -18,24 +18,24 @@ def getSyns(word):
     y = json.loads(response)
     for i in y["data"]["list"]:
         synonyms.append(i)
-    try:
-        for x in synonyms[:int(len(synonyms)/1.5)]:
-            url = "https://synonyms-word-info.p.rapidapi.com/v1/word"
+    # try:
+    #     for x in synonyms[:int(len(synonyms)/1.5)]:
+    #         url = "https://synonyms-word-info.p.rapidapi.com/v1/word"
 
-            querystring = {"str":word}
+    #         querystring = {"str":word}
 
-            headers = {
-                'x-rapidapi-key': "be5613ee63mshee2af9c5d65ea5fp151699jsnc5b6aa9d7c78",
-                'x-rapidapi-host': "synonyms-word-info.p.rapidapi.com"
-                }
+    #         headers = {
+    #             'x-rapidapi-key': "be5613ee63mshee2af9c5d65ea5fp151699jsnc5b6aa9d7c78",
+    #             'x-rapidapi-host': "synonyms-word-info.p.rapidapi.com"
+    #             }
 
-            response = requests.request("GET", url, headers=headers, params=querystring)
-            response = response.text
-            y = json.loads(response)
-            for i in y["data"]["list"]:
-                synonyms.append(i)
-    except Exception as e:
-        print(e)
+    #         response = requests.request("GET", url, headers=headers, params=querystring)
+    #         response = response.text
+    #         y = json.loads(response)
+    #         for i in y["data"]["list"]:
+    #             synonyms.append(i)
+    # except Exception as e:
+    #     print(e)
 
     return synonyms
 
